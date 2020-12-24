@@ -1,0 +1,14 @@
+steps:
+# 1. NPM Install
+- name: 'gcr.io/cloud-builders/npm'
+  args: ['install']
+# 2. NPM Build
+- name: 'gcr.io/cloud-builders/npm'
+  args: ['run', 'build']
+#
+# * need extra step to delete non essential deploy files??
+#
+# 3. Deploy
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: ['app', 'deploy']
+  timeout: '1600s'

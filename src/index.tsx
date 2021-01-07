@@ -5,10 +5,10 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import 'fontsource-roboto';
 
 import App from './App';
-import theme from './theme.js';
-import * as serviceWorkerRegistration from './serviceWorkerRegistration';
-import reportWebVitals from './reportWebVitals';
-import initWasm from "./initWasm";
+import theme from './utilities/theme.js';
+import * as serviceWorkerRegistration from './utilities/serviceWorkerRegistration';
+import reportWebVitals from './utilities/reportWebVitals';
+import initWasm from "./utilities/initWasm";
 
 ReactDOM.render(
   <React.StrictMode>

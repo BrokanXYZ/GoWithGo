@@ -6,12 +6,11 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { useCanvas } from './hooks/useCanvas';
-import Coord from './interfaces/Coord';
+import { useGoBoard } from './hooks/useGoBoard';
 
 const useStyles = makeStyles((theme) => ({
   canvas: {
-    backgroundColor: "cornsilk",
+    backgroundColor: "lightblue",
     border: "5px",
     borderColor: "black"
   },
@@ -20,17 +19,17 @@ const useStyles = makeStyles((theme) => ({
 function App() {
 
   const classes = useStyles();
-  const [ coordinates, setCoordinates, canvasRef, canvasWidth, canvasHeight ] = useCanvas();
+  const [ board, setBoard, canvasRef, canvasWidth, canvasHeight ] = useGoBoard();
 
   const handleCanvasClick=(event: React.MouseEvent)=>{
     // on each click get current mouse location 
-    const currentCoord: Coord = { x: event.clientX, y: event.clientY };
+    //const currentCoord: Coord = { x: event.clientX, y: event.clientY };
     // add the newest mouse location to an array in state 
-    setCoordinates([...coordinates, currentCoord]);
+    //setCoordinates([...coordinates, currentCoord]);
   };
 
   const handleClearCanvas=(event: React.MouseEvent)=>{
-    setCoordinates([]);
+    //setCoordinates([]);
   };
 
   return (

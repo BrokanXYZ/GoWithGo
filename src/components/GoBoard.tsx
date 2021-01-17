@@ -19,14 +19,13 @@ function GoBoard() {
 
     const classes = useStyles();
 
-    const canvasWidth = 500;
-    const canvasHeight = 500;
+    const canvasWidth = 1000;
+    const canvasHeight = 1000;
 
-    const boardRows = 9;
-    const boardColumns = 9;
+    const boardRows = 19;
+    const boardColumns = 19;
 
-    const stoneRadius = 25;
-    const stoneSpacing = 1;
+    const stoneRadius = 20;
     const stoneSvgPath = 
       ` M 0, ${stoneRadius} 
         a ${stoneRadius},${stoneRadius} 0 1,0 ${stoneRadius*2},0 
@@ -50,26 +49,19 @@ function GoBoard() {
         {
             canvasElement = canvasRef.current!;
             ctx = canvasElement.getContext('2d')!;
-            drawBoardIntersections(ctx, boardRows, boardColumns);
+            InitializeBoard(ctx, board);
         }
     }, [canvasRef]);
-    
-    React.useEffect(()=>{
-      if(canvasRef)
-      {
-        console.log("draw");
-        
-        // clear the canvas area before rendering the board
-        //ctx.clearRect( 0,0, canvasWidth, canvasHeight );
-        drawBoard(ctx, board);
-      }
-    }, [board]);
 
-    function drawBoardIntersections(ctx: CanvasRenderingContext2D, boardRows: number, boardColumns: number)
+    function InitializeBoard(ctx: CanvasRenderingContext2D, board: number[][]){
+      const rowSpacing = canvasHeight/(boardRows+1);
+      const columnSpacing = canvasWidth/(boardColumns+1);
+      drawBoardIntersections(ctx, boardRows, boardColumns, rowSpacing, columnSpacing);
+      drawBoardStones(ctx, board, rowSpacing, columnSpacing);
+    };
+
+    function drawBoardIntersections(ctx: CanvasRenderingContext2D, boardRows: number, boardColumns: number, rowSpacing: number, columnSpacing: number)
     {
-        const rowSpacing = canvasHeight/(boardRows+1);
-        const columnSpacing = canvasWidth/(boardColumns+1);
-
         for(let i=1; i<=boardRows; i++)
         {
             ctx.beginPath();
@@ -84,7 +76,8 @@ function GoBoard() {
         }
     }
 
-    function drawBoard(ctx: CanvasRenderingContext2D, board: number[][]){
+    function drawBoardStones(ctx: CanvasRenderingContext2D, board: number[][], rowSpacing: number, columnSpacing: number)
+    {
       board.forEach((row, i) => {
         row.forEach((intersection, j) => {
           switch(intersection)
@@ -94,13 +87,13 @@ function GoBoard() {
             case Intersection.White:
               ctx.fillStyle = 'white';
               ctx.setTransform(1, 0, 0, 1, 0, 0);
-              ctx.translate(stoneRadius*2*j*stoneSpacing,stoneRadius*2*i*stoneSpacing);
+              ctx.translate(columnSpacing*j+columnSpacing-stoneRadius,rowSpacing*i+rowSpacing-stoneRadius);
               ctx.fill(stone);
               break;
             case Intersection.Black:
               ctx.fillStyle = 'black';
               ctx.setTransform(1, 0, 0, 1, 0, 0);
-              ctx.translate(stoneRadius*2*j*stoneSpacing,stoneRadius*2*i*stoneSpacing);
+              ctx.translate(columnSpacing*j+columnSpacing-stoneRadius,rowSpacing*i+rowSpacing-stoneRadius);
               ctx.fill(stone);
               break;
             default:
@@ -109,7 +102,7 @@ function GoBoard() {
           }
         })
       });
-    };
+    }
 
     const handleCanvasClick=(event: React.MouseEvent)=>{
       // on each click get current mouse location 

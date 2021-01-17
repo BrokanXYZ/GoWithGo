@@ -19,11 +19,14 @@ function GoBoard() {
 
     const classes = useStyles();
 
-    const canvasWidth = 1000;
-    const canvasHeight = 1000;
-
-    const boardRows = 19;
-    const boardColumns = 19;
+    const canvasWidth = 500;
+    const canvasHeight = 500;
+    const boardRows = 9;
+    const boardColumns = 9;
+    const gridBuffer = 50;
+    
+    const rowSpacing = canvasHeight/(boardRows+1);
+    const columnSpacing = canvasWidth/(boardColumns+1);
 
     const stoneRadius = 20;
     const stoneSvgPath = 
@@ -54,13 +57,11 @@ function GoBoard() {
     }, [canvasRef]);
 
     function InitializeBoard(ctx: CanvasRenderingContext2D, board: number[][]){
-      const rowSpacing = canvasHeight/(boardRows+1);
-      const columnSpacing = canvasWidth/(boardColumns+1);
-      drawBoardIntersections(ctx, boardRows, boardColumns, rowSpacing, columnSpacing);
-      drawBoardStones(ctx, board, rowSpacing, columnSpacing);
+      drawBoardIntersections(ctx, boardRows, boardColumns);
+      drawBoardStones(ctx, board);
     };
 
-    function drawBoardIntersections(ctx: CanvasRenderingContext2D, boardRows: number, boardColumns: number, rowSpacing: number, columnSpacing: number)
+    function drawBoardIntersections(ctx: CanvasRenderingContext2D, boardRows: number, boardColumns: number)
     {
         for(let i=1; i<=boardRows; i++)
         {
@@ -76,7 +77,7 @@ function GoBoard() {
         }
     }
 
-    function drawBoardStones(ctx: CanvasRenderingContext2D, board: number[][], rowSpacing: number, columnSpacing: number)
+    function drawBoardStones(ctx: CanvasRenderingContext2D, board: number[][])
     {
       board.forEach((row, i) => {
         row.forEach((intersection, j) => {
@@ -105,14 +106,20 @@ function GoBoard() {
     }
 
     const handleCanvasClick=(event: React.MouseEvent)=>{
-      // on each click get current mouse location 
-      //const currentCoord: Coord = { x: event.clientX, y: event.clientY };
-      // add the newest mouse location to an array in state 
-      //setCoordinates([...coordinates, currentCoord]);
-    };
+      const mousePositionX: number = event.clientX;
+      const mousePositionY: number = event.clientY;
+      const cellX = (mousePositionX-(gridBuffer/2))/columnSpacing;
+      const cellY = (mousePositionY-(gridBuffer/2))/rowSpacing;
 
-    const handleClearCanvas=(event: React.MouseEvent)=>{
-      //setCoordinates([]);
+      if((cellX < 0 || cellX > boardColumns) || (cellY < 0 || cellY > boardRows))
+      {
+        console.log("out of bounds");
+      }
+      else
+      {
+        console.log(`(${Math.floor(cellX)},${Math.floor(cellY)})`);
+      }
+
     };
 
   return (

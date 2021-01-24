@@ -21,14 +21,13 @@ function GoBoard() {
 
     const canvasWidth = 500;
     const canvasHeight = 500;
-    const boardRows = 9;
-    const boardColumns = 9;
+    const boardSize = 9;
 
     // Space b/w edge of board and canvas
     const gridBuffer = 50;
     
-    const rowSpacing = canvasHeight/(boardRows+1);
-    const columnSpacing = canvasWidth/(boardColumns+1);
+    const rowSpacing = canvasHeight/(boardSize+1);
+    const columnSpacing = canvasWidth/(boardSize+1);
 
     const stoneRadius = 20;
     const stoneSvgPath = 
@@ -42,10 +41,10 @@ function GoBoard() {
 
     const [board, setBoard] = React.useState<number[][]>((): number[][] => {
       let initBoard = [];
-      for(let i=0; i<boardRows; i++)
+      for(let i=0; i<boardSize; i++)
       {
         let row = [];
-        for(let j=0; j<boardColumns; j++)
+        for(let j=0; j<boardSize; j++)
         {
           row.push(0);
         }
@@ -69,22 +68,22 @@ function GoBoard() {
 
     function DrawBoard(ctx: CanvasRenderingContext2D, board: number[][]){
       ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-      drawBoardLines(ctx, boardRows, boardColumns);
+      drawBoardLines(ctx, boardSize);
       drawBoardStones(ctx, board);
     };
 
-    function drawBoardLines(ctx: CanvasRenderingContext2D, boardRows: number, boardColumns: number)
+    function drawBoardLines(ctx: CanvasRenderingContext2D, boardSize: number)
     {
-        for(let i=1; i<=boardRows; i++)
+        for(let i=1; i<=boardSize; i++)
         {
             ctx.beginPath();
             ctx.moveTo(columnSpacing, rowSpacing*i);
-            ctx.lineTo(columnSpacing*boardColumns, rowSpacing*i);
+            ctx.lineTo(columnSpacing*boardSize, rowSpacing*i);
             ctx.stroke();
 
             ctx.beginPath();
             ctx.moveTo(columnSpacing*i, rowSpacing);
-            ctx.lineTo(columnSpacing*i, rowSpacing*boardRows);
+            ctx.lineTo(columnSpacing*i, rowSpacing*boardSize);
             ctx.stroke();
         }
     }
@@ -128,7 +127,7 @@ function GoBoard() {
       const cellX = (mousePositionX-(gridBuffer/2))/columnSpacing;
       const cellY = (mousePositionY-(gridBuffer/2))/rowSpacing;
 
-      if((cellX < 0 || cellX > boardColumns) || (cellY < 0 || cellY > boardRows))
+      if((cellX < 0 || cellX > boardSize) || (cellY < 0 || cellY > boardSize))
       {
         console.log("Cursor out of bounds");
       }

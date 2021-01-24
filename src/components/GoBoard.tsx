@@ -1,11 +1,11 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
+import MatchAction from '../interfaces/MatchAction';
+
 const useStyles = makeStyles((theme) => ({
   canvas: {
     backgroundColor: "lightblue",
-    //border: "5px",
-    //borderColor: "black"
   },
 }));
 
@@ -23,6 +23,8 @@ function GoBoard() {
     const canvasHeight = 500;
     const boardRows = 9;
     const boardColumns = 9;
+
+    // Space b/w edge of board and canvas
     const gridBuffer = 50;
     
     const rowSpacing = canvasHeight/(boardRows+1);
@@ -35,14 +37,22 @@ function GoBoard() {
         a ${stoneRadius},${stoneRadius} 0 1,0 ${stoneRadius*-2},0`;
     const stone = new Path2D(stoneSvgPath);
 
-    // 0: nothing 
-    // 1: white stone
-    // 2: black stone
-    const [board, setBoard] = React.useState<number[][]>(
-        new Array(boardRows).fill(
-            new Array(boardColumns).fill(1)
-        )
-    );
+    const [board, setBoard] = React.useState<number[][]>((): number[][] => {
+      let initBoard = [];
+      for(let i=0; i<boardRows; i++)
+      {
+        let row = [];
+        for(let j=0; j<boardColumns; j++)
+        {
+          row.push(0);
+        }
+        initBoard.push(row);
+      }
+      return initBoard
+    });
+
+    const [matchHistory, setMatchHistory] = React.useState<MatchAction[]>([]); 
+
     const canvasRef = React.useRef<HTMLCanvasElement>(null);
     let canvasElement: HTMLCanvasElement | null = null;
     let ctx: CanvasRenderingContext2D;
@@ -50,18 +60,20 @@ function GoBoard() {
     React.useEffect(()=>{
         if(canvasRef)
         {
+            console.log("draw123");
             canvasElement = canvasRef.current!;
             ctx = canvasElement.getContext('2d')!;
-            InitializeBoard(ctx, board);
+            DrawBoard(ctx, board);
         }
-    }, [canvasRef]);
+    }, [canvasRef, board]);
 
-    function InitializeBoard(ctx: CanvasRenderingContext2D, board: number[][]){
-      drawBoardIntersections(ctx, boardRows, boardColumns);
+    function DrawBoard(ctx: CanvasRenderingContext2D, board: number[][]){
+      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+      drawBoardLines(ctx, boardRows, boardColumns);
       drawBoardStones(ctx, board);
     };
 
-    function drawBoardIntersections(ctx: CanvasRenderingContext2D, boardRows: number, boardColumns: number)
+    function drawBoardLines(ctx: CanvasRenderingContext2D, boardRows: number, boardColumns: number)
     {
         for(let i=1; i<=boardRows; i++)
         {
@@ -87,15 +99,15 @@ function GoBoard() {
               break;
             case Intersection.White:
               ctx.fillStyle = 'white';
-              ctx.setTransform(1, 0, 0, 1, 0, 0);
               ctx.translate(columnSpacing*j+columnSpacing-stoneRadius,rowSpacing*i+rowSpacing-stoneRadius);
               ctx.fill(stone);
+              resetContextTranslation(ctx);
               break;
             case Intersection.Black:
               ctx.fillStyle = 'black';
-              ctx.setTransform(1, 0, 0, 1, 0, 0);
               ctx.translate(columnSpacing*j+columnSpacing-stoneRadius,rowSpacing*i+rowSpacing-stoneRadius);
               ctx.fill(stone);
+              resetContextTranslation(ctx);
               break;
             default:
               console.error(`Unhandled intersection of value: ${intersection}`);
@@ -103,6 +115,11 @@ function GoBoard() {
           }
         })
       });
+    }
+
+    function resetContextTranslation(ctx: CanvasRenderingContext2D)
+    {
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
     }
 
     const handleCanvasClick=(event: React.MouseEvent)=>{
@@ -113,13 +130,24 @@ function GoBoard() {
 
       if((cellX < 0 || cellX > boardColumns) || (cellY < 0 || cellY > boardRows))
       {
-        console.log("out of bounds");
+        console.log("Cursor out of bounds");
       }
       else
       {
-        console.log(`(${Math.floor(cellX)},${Math.floor(cellY)})`);
-      }
+        const { updatedBoard, error } = placeStone(cellX, cellY, [...board]);
 
+        console.log("updatedBoard",updatedBoard)
+        console.log("error", error)
+        if(error)
+        {
+          console.log("Unable to place stone");
+          console.log(`Reason: ${error}`);
+        }
+        else
+        {
+          setBoard(updatedBoard);
+        }
+      }
     };
 
   return (

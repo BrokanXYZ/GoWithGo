@@ -11,8 +11,8 @@ const useStyles = makeStyles((theme) => ({
 
 enum Intersection {
   None = 0,
-  White,
-  Black
+  BlackStone,
+  WhiteStone
 }
 
 function GoBoard() {
@@ -37,6 +37,9 @@ function GoBoard() {
         a ${stoneRadius},${stoneRadius} 0 1,0 ${stoneRadius*-2},0`;
     const stone = new Path2D(stoneSvgPath);
 
+    const [isBlackTurn, setIsBlackTurn] = React.useState<boolean>(true);
+    const [matchHistory, setMatchHistory] = React.useState<MatchAction[]>([]); 
+
     const [board, setBoard] = React.useState<number[][]>((): number[][] => {
       let initBoard = [];
       for(let i=0; i<boardRows; i++)
@@ -51,8 +54,6 @@ function GoBoard() {
       return initBoard
     });
 
-    const [matchHistory, setMatchHistory] = React.useState<MatchAction[]>([]); 
-
     const canvasRef = React.useRef<HTMLCanvasElement>(null);
     let canvasElement: HTMLCanvasElement | null = null;
     let ctx: CanvasRenderingContext2D;
@@ -60,7 +61,6 @@ function GoBoard() {
     React.useEffect(()=>{
         if(canvasRef)
         {
-            console.log("draw123");
             canvasElement = canvasRef.current!;
             ctx = canvasElement.getContext('2d')!;
             DrawBoard(ctx, board);
@@ -97,13 +97,13 @@ function GoBoard() {
           {
             case Intersection.None:
               break;
-            case Intersection.White:
+            case Intersection.WhiteStone:
               ctx.fillStyle = 'white';
               ctx.translate(columnSpacing*j+columnSpacing-stoneRadius,rowSpacing*i+rowSpacing-stoneRadius);
               ctx.fill(stone);
               resetContextTranslation(ctx);
               break;
-            case Intersection.Black:
+            case Intersection.BlackStone:
               ctx.fillStyle = 'black';
               ctx.translate(columnSpacing*j+columnSpacing-stoneRadius,rowSpacing*i+rowSpacing-stoneRadius);
               ctx.fill(stone);
@@ -134,17 +134,14 @@ function GoBoard() {
       }
       else
       {
-        const { updatedBoard, error } = placeStone(cellX, cellY, [...board]);
-
-        console.log("updatedBoard",updatedBoard)
-        console.log("error", error)
+        const { updatedBoard, error } = placeStone(cellX, cellY, [...board], isBlackTurn);
         if(error)
         {
-          console.log("Unable to place stone");
-          console.log(`Reason: ${error}`);
+          console.log(`Unable to place stone\nReason: ${error}`);
         }
         else
         {
+          setIsBlackTurn(!isBlackTurn);
           setBoard(updatedBoard);
         }
       }

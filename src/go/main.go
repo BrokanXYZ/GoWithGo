@@ -5,16 +5,26 @@ import (
 	"syscall/js"
 )
 
-func placeStone(x int, y int, board js.Value) map[string]interface{} {
-	fmt.Printf("(%v,%v) = %v\n", x, y, board.Index(x).Index(y))
+const (
+	None = iota
+	BlackStone
+	WhiteStone
+)
 
+func placeStone(x int, y int, board js.Value, isBlackTurn bool) map[string]interface{} {
 	result := map[string]interface{}{
 		"updatedBoard": board,
 		"error":        nil,
 	}
 
-	if board.Index(y).Index(x).Int() == 0 {
-		board.Index(y).SetIndex(x, 1)
+	target := board.Index(y).Index(x).Int()
+
+	if target == None {
+		if isBlackTurn {
+			board.Index(y).SetIndex(x, BlackStone)
+		} else {
+			board.Index(y).SetIndex(x, WhiteStone)
+		}
 	} else {
 		result["error"] = "There is already a stone there!"
 	}
@@ -27,7 +37,8 @@ func placeStoneWrapper() js.Func {
 		x := args[0].Int()
 		y := args[1].Int()
 		board := args[2]
-		result := placeStone(x, y, board)
+		isBlackTurn := args[3].Bool()
+		result := placeStone(x, y, board, isBlackTurn)
 		return result
 	})
 	return wrapperFunc

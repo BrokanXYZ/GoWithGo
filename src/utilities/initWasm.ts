@@ -1,8 +1,7 @@
-import MatchAction from '../interfaces/MatchAction';
-
 declare global {
     var Go: any
-    var placeStone: (x: number, y: number, board: number[][]) => {updatedBoard: number[][], error: string}
+    var placeStone: (x: number, y: number, board: number[][], isBlackTurn: boolean) => 
+        {updatedBoard: number[][], error: string}
 }
 
 const initWasm = async function(){

@@ -34,7 +34,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "buildWasm": "cd src/go && set GOOS=js&& set GOARCH=wasm&& go build -o  ../../public/wasm/main.wasm"
+    "buildwasm": "cd src/go && set GOOS=js&& set GOARCH=wasm&& go build -o  ../../public/wasm/main.wasm"
   },
   "eslintConfig": {
     "extends": "react-app"

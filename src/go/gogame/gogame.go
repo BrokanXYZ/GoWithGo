@@ -3,8 +3,15 @@
 package gogame
 
 import (
+	"fmt"
 	"syscall/js"
 )
+
+// GoGame ...
+type GoGame struct {
+	BoardSize int
+	Board     [][]uint8
+}
 
 // Intersection Enum
 const (
@@ -13,81 +20,86 @@ const (
 	WhiteStone
 )
 
+// NewGoGame creates new instance of GoGame
+func NewGoGame(boardSize int) (GoGame, error) {
+
+	if boardSize < 1 {
+		return GoGame{}, fmt.Errorf("boardSize should be > 0")
+	}
+
+	newBoard := make([][]uint8, boardSize)
+	for i := range newBoard {
+		newBoard[i] = make([]uint8, boardSize)
+	}
+
+	return GoGame{Board: newBoard, BoardSize: boardSize}, nil
+}
+
 // GetNumLiberties ...
 func GetNumLiberties(x int, y int, board js.Value, isBlackTurn bool) int {
 	return 0
 }
 
-// PlaceStone ...
-func PlaceStone(x int, y int, board js.Value, isBlackTurn bool) map[string]interface{} {
-	result := map[string]interface{}{
-		"updatedBoard": board,
-		"error":        nil,
-	}
+// PlaceStone attempts to place stone at given (x,y) coords on the board
+func (goGame *GoGame) PlaceStone(x int, y int, isBlackTurn bool) error {
+	// result := map[string]interface{}{
+	// 	"updatedBoard": board,
+	// 	"error":        nil,
+	// }
 
-	target := board.Index(y).Index(x).Int()
-	//boardSize := board.Index(0).Length()
-	moveIsLegal := true
+	target := goGame.Board[y][x]
 
 	// 1. space is empty
 	if target != None {
-		moveIsLegal = false
-		result["error"] = "There is already a stone there!"
+		return fmt.Errorf("there is already a stone at position (%v,%v)", x, y)
 	}
 
 	// 2. stone will capture
-	if moveIsLegal {
-
-	}
 
 	// 3. stone will have a liberty
 
 	// WIP if adj intersection is same color as stone being placed,
 	// then must check if connection has a liberty
 
-	if moveIsLegal {
-		var numLiberties int
-		var adjIntersections []int
+	// if moveIsLegal {
+	// 	var numLiberties int
+	// 	var adjIntersections []int
 
-		if !board.Index(y + 1).IsUndefined() {
-			adjIntersections = append(adjIntersections, board.Index(y+1).Index(x).Int())
-		}
+	// 	if !board.Index(y + 1).IsUndefined() {
+	// 		adjIntersections = append(adjIntersections, board.Index(y+1).Index(x).Int())
+	// 	}
 
-		if !board.Index(y - 1).IsUndefined() {
-			adjIntersections = append(adjIntersections, board.Index(y-1).Index(x).Int())
-		}
+	// 	if !board.Index(y - 1).IsUndefined() {
+	// 		adjIntersections = append(adjIntersections, board.Index(y-1).Index(x).Int())
+	// 	}
 
-		if !board.Index(y).Index(x + 1).IsUndefined() {
-			adjIntersections = append(adjIntersections, board.Index(y).Index(x+1).Int())
-		}
+	// 	if !board.Index(y).Index(x + 1).IsUndefined() {
+	// 		adjIntersections = append(adjIntersections, board.Index(y).Index(x+1).Int())
+	// 	}
 
-		if !board.Index(y).Index(x - 1).IsUndefined() {
-			adjIntersections = append(adjIntersections, board.Index(y).Index(x-1).Int())
-		}
+	// 	if !board.Index(y).Index(x - 1).IsUndefined() {
+	// 		adjIntersections = append(adjIntersections, board.Index(y).Index(x-1).Int())
+	// 	}
 
-		for _, intersection := range adjIntersections {
-			if intersection == None {
-				numLiberties++
-			}
-		}
+	// 	for _, intersection := range adjIntersections {
+	// 		if intersection == None {
+	// 			numLiberties++
+	// 		}
+	// 	}
 
-		if numLiberties == 0 {
-			moveIsLegal = false
-			result["error"] = "Stone would not have any liberties"
-		}
-	}
+	// 	if numLiberties == 0 {
+	// 		moveIsLegal = false
+	// 		result["error"] = "Stone would not have any liberties"
+	// 	}
+	// }
+
 	// 4. stone will not recreate former board
-	if moveIsLegal {
 
+	if isBlackTurn {
+		goGame.Board[y][x] = BlackStone
+	} else {
+		goGame.Board[y][x] = WhiteStone
 	}
 
-	if moveIsLegal {
-		if isBlackTurn {
-			board.Index(y).SetIndex(x, BlackStone)
-		} else {
-			board.Index(y).SetIndex(x, WhiteStone)
-		}
-	}
-
-	return result
+	return nil
 }

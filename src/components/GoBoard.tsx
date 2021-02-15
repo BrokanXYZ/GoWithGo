@@ -1,8 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
-import MatchAction from '../interfaces/MatchAction';
-
 const useStyles = makeStyles((theme) => ({
   canvas: {
     backgroundColor: "lightblue",
@@ -15,7 +13,11 @@ enum Intersection {
   WhiteStone
 }
 
-function GoBoard() {
+type GoBoardProps = {
+  isWasmInitialized: Boolean
+}
+
+function GoBoard({isWasmInitialized}: GoBoardProps) {
 
     const classes = useStyles();
 
@@ -37,21 +39,19 @@ function GoBoard() {
     const stone = new Path2D(stoneSvgPath);
 
     const [isBlackTurn, setIsBlackTurn] = React.useState<boolean>(true);
-    const [matchHistory, setMatchHistory] = React.useState<MatchAction[]>([]); 
+    const [board, setBoard] = React.useState<number[][]>([]);
 
-    const [board, setBoard] = React.useState<number[][]>((): number[][] => {
-      let initBoard = [];
-      for(let i=0; i<boardSize; i++)
-      {
-        let row = [];
-        for(let j=0; j<boardSize; j++)
-        {
-          row.push(0);
+    React.useEffect(()=>{
+      if(isWasmInitialized) {
+        const {board, error} = newGoGame(boardSize);
+
+        if(error !== null) {
+          console.error(error);
+        } else {
+          setBoard(board);
         }
-        initBoard.push(row);
       }
-      return initBoard
-    });
+    }, [isWasmInitialized])
 
     const canvasRef = React.useRef<HTMLCanvasElement>(null);
     let canvasElement: HTMLCanvasElement | null = null;
@@ -133,7 +133,7 @@ function GoBoard() {
       }
       else
       {
-        const { updatedBoard, error } = placeStone(cellX, cellY, [...board], isBlackTurn);
+        const { board, error } = placeStone(cellX, cellY, isBlackTurn);
         if(error)
         {
           console.log(`Unable to place stone\nReason: ${error}`);
@@ -141,7 +141,7 @@ function GoBoard() {
         else
         {
           setIsBlackTurn(!isBlackTurn);
-          setBoard(updatedBoard);
+          setBoard(board);
         }
       }
     };

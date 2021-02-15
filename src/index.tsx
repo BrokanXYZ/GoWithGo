@@ -8,7 +8,6 @@ import App from './App';
 import theme from './utilities/theme.js';
 import * as serviceWorkerRegistration from './utilities/serviceWorkerRegistration';
 import reportWebVitals from './utilities/reportWebVitals';
-import initWasm from "./utilities/initWasm";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -30,4 +29,3 @@ serviceWorkerRegistration.register();
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals(console.log);
 
-initWasm();

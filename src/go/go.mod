@@ -1,3 +1,3 @@
-module example.com/gowithgo
+module github.com/BrokanXYZ/GoWithGo
 
 go 1.15

@@ -6,7 +6,7 @@ import (
 	"syscall/js"
 	"testing"
 
-	"example.com/gowithgo/gogame"
+	"github.com/BrokanXYZ/GoWithGo/gogame"
 )
 
 var board = js.Global().Call("eval", `

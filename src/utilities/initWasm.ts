@@ -1,10 +1,11 @@
 declare global {
     var Go: any
-    var placeStone: (x: number, y: number, board: number[][], isBlackTurn: boolean) => 
-        {updatedBoard: number[][], error: string}
+    var placeStone: (x: number, y: number, isBlackTurn: boolean) => 
+        {board: number[][], error: string}
+    var newGoGame: (x: number) => {board: number[][], error: string}
 }
 
-const initWasm = async function(){
+const initWasm = async function(setIsWasmInitialized: React.Dispatch<React.SetStateAction<boolean>>){
     if (WebAssembly) {
         // WebAssembly.instantiateStreaming is not currently available in Safari
         if (WebAssembly && !WebAssembly.instantiateStreaming) { // polyfill
@@ -18,11 +19,11 @@ const initWasm = async function(){
         }  
 
         const go = new Go();
+        const wasmMain = await fetch("/wasm/main.wasm");
 
-        const test = await fetch("/wasm/main.wasm");
-
-        WebAssembly.instantiateStreaming(test, go.importObject).then((result) => {
+        WebAssembly.instantiateStreaming(wasmMain, go.importObject).then((result) => {
             go.run(result.instance);
+            setIsWasmInitialized(true);
         });
     } else {
     console.log("WebAssembly is not supported in your browser")

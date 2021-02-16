@@ -124,16 +124,16 @@ function GoBoard({isWasmInitialized}: GoBoardProps) {
     const handleCanvasClick=(event: React.MouseEvent)=>{
       const mousePositionX: number = event.clientX;
       const mousePositionY: number = event.clientY;
-      const cellX = (mousePositionX-(gridBuffer/2))/columnSpacing;
-      const cellY = (mousePositionY-(gridBuffer/2))/rowSpacing;
+      const cellCol = (mousePositionX-(gridBuffer/2))/columnSpacing;
+      const cellRow = (mousePositionY-(gridBuffer/2))/rowSpacing;
 
-      if((cellX < 0 || cellX > boardSize) || (cellY < 0 || cellY > boardSize))
+      if((cellCol < 0 || cellCol > boardSize) || (cellRow < 0 || cellRow > boardSize))
       {
         console.log("Cursor out of bounds");
       }
       else
       {
-        const { board, error } = placeStone(cellX, cellY, isBlackTurn);
+        const { board, error } = placeStone(cellCol, cellRow, isBlackTurn);
         if(error)
         {
           console.log(`Unable to place stone\nReason: ${error}`);

@@ -1,8 +1,8 @@
 declare global {
     var Go: any
-    var placeStone: (x: number, y: number, isBlackTurn: boolean) => 
+    var placeStone: (col: number, row: number, isBlackTurn: boolean) => 
         {board: number[][], error: string}
-    var newGoGame: (x: number) => {board: number[][], error: string}
+    var newGoGame: (boardSize: number) => {board: number[][], error: string}
 }
 
 const initWasm = async function(setIsWasmInitialized: React.Dispatch<React.SetStateAction<boolean>>){

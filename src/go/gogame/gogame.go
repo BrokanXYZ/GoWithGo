@@ -43,9 +43,10 @@ func NewCoord(col int, row int) Coord {
 	return Coord{X: row, Y: col}
 }
 
-// GetPotentialNumLiberties returns the number of liberties that a stone would have
-// if it were placed at the target location
-func (goGame *GoGame) GetPotentialNumLiberties(x int, y int, isBlackTurn bool) int {
+// GetNumLiberties returns the number of liberties that a stone would or does have.
+// It doesn't matter if the stone exists yet or not. The color of the stone is assumed
+// by the param isBlackTurn.
+func (goGame *GoGame) GetNumLiberties(x int, y int, isBlackTurn bool) int {
 
 	numLiberties := 0
 	visited := make(map[Coord]bool)
@@ -61,52 +62,108 @@ func (goGame *GoGame) GetPotentialNumLiberties(x int, y int, isBlackTurn bool) i
 		visited[current] = true
 		toVisit = toVisit[1:]
 
-		haveVisitedUp := visited[Coord{X: current.X, Y: current.Y - 1}]
-		if current.Y-1 >= 0 && !haveVisitedUp {
-			up := goGame.Board[current.X][current.Y-1]
-
-			if up == uint8(sameStone) {
-				toVisit = append(toVisit, Coord{X: current.X, Y: current.Y - 1})
-			} else if up == NoStone {
-				numLiberties++
-			}
+		adjIntersections := []Coord{
+			{X: current.X, Y: current.Y - 1},
+			{X: current.X, Y: current.Y + 1},
+			{X: current.X - 1, Y: current.Y},
+			{X: current.X + 1, Y: current.Y},
 		}
 
-		haveVisitedDown := visited[Coord{X: current.X, Y: current.Y + 1}]
-		if current.Y+1 < goGame.BoardSize && !haveVisitedDown {
-			down := goGame.Board[current.X][current.Y+1]
+		for _, adjInter := range adjIntersections {
+			coordIsInBoardRange := adjInter.Y >= 0 &&
+				adjInter.X >= 0 &&
+				adjInter.Y < goGame.BoardSize &&
+				adjInter.X < goGame.BoardSize
 
-			if down == uint8(sameStone) {
-				toVisit = append(toVisit, Coord{X: current.X, Y: current.Y + 1})
-			} else if down == NoStone {
-				numLiberties++
-			}
-		}
-
-		haveVisitedLeft := visited[Coord{X: current.X - 1, Y: current.Y}]
-		if current.X-1 >= 0 && !haveVisitedLeft {
-			left := goGame.Board[current.X-1][current.Y]
-
-			if left == uint8(sameStone) {
-				toVisit = append(toVisit, Coord{X: current.X - 1, Y: current.Y})
-			} else if left == NoStone {
-				numLiberties++
-			}
-		}
-
-		haveVisitedRight := visited[Coord{X: current.X + 1, Y: current.Y}]
-		if current.X+1 < goGame.BoardSize && !haveVisitedRight {
-			right := goGame.Board[current.X+1][current.Y]
-
-			if right == uint8(sameStone) {
-				toVisit = append(toVisit, Coord{X: current.X + 1, Y: current.Y})
-			} else if right == NoStone {
-				numLiberties++
+			if coordIsInBoardRange && !visited[adjInter] {
+				inter := goGame.Board[adjInter.X][adjInter.Y]
+				if inter == uint8(sameStone) {
+					toVisit = append(toVisit, adjInter)
+				} else if inter == NoStone {
+					numLiberties++
+				}
 			}
 		}
 	}
 
 	return numLiberties
+}
+
+func (goGame *GoGame) captureGroup(x int, y int, isBlackTurn bool, capturedStones *map[Coord]bool) {
+	toVisit := []Coord{{X: x, Y: y}}
+	oppStone := WhiteStone
+
+	if !isBlackTurn {
+		oppStone = BlackStone
+	}
+
+	for len(toVisit) > 0 {
+		current := toVisit[0]
+		(*capturedStones)[current] = true
+		goGame.Board[current.X][current.Y] = NoStone
+		toVisit = toVisit[1:]
+
+		adjIntersections := []Coord{
+			{X: current.X, Y: current.Y - 1},
+			{X: current.X, Y: current.Y + 1},
+			{X: current.X - 1, Y: current.Y},
+			{X: current.X + 1, Y: current.Y},
+		}
+
+		for _, adjInter := range adjIntersections {
+			coordIsInBoardRange := adjInter.Y >= 0 &&
+				adjInter.X >= 0 &&
+				adjInter.Y < goGame.BoardSize &&
+				adjInter.X < goGame.BoardSize
+
+			if coordIsInBoardRange && !(*capturedStones)[adjInter] {
+				inter := goGame.Board[adjInter.X][adjInter.Y]
+				if inter == uint8(oppStone) {
+					toVisit = append(toVisit, adjInter)
+				}
+			}
+		}
+	}
+}
+
+// AttemptCapture ...
+func (goGame *GoGame) AttemptCapture(x int, y int, isBlackTurn bool) bool {
+	capturedStones := make(map[Coord]bool)
+	sameStone := BlackStone
+	oppStone := WhiteStone
+	if !isBlackTurn {
+		sameStone = WhiteStone
+		oppStone = BlackStone
+	}
+
+	// Temporarily place stone to check for captures
+	goGame.Board[x][y] = uint8(sameStone)
+	defer func() { goGame.Board[x][y] = NoStone }()
+
+	adjIntersections := []Coord{
+		{X: x, Y: y - 1},
+		{X: x, Y: y + 1},
+		{X: x - 1, Y: y},
+		{X: x + 1, Y: y},
+	}
+
+	for _, adjInter := range adjIntersections {
+		coordsIsInBoardRange := adjInter.Y >= 0 &&
+			adjInter.X >= 0 &&
+			adjInter.Y < goGame.BoardSize &&
+			adjInter.X < goGame.BoardSize
+
+		if coordsIsInBoardRange && !capturedStones[adjInter] {
+			stone := goGame.Board[adjInter.X][adjInter.Y]
+			if stone == uint8(oppStone) {
+				if goGame.GetNumLiberties(adjInter.X, adjInter.Y, isBlackTurn) == 0 {
+					goGame.captureGroup(adjInter.X, adjInter.Y, isBlackTurn, &capturedStones)
+				}
+			}
+		}
+	}
+
+	return len(capturedStones) > 0
 }
 
 // PlaceStone attempts to place stone at given (x,y) Coords on the board
@@ -120,16 +177,18 @@ func (goGame *GoGame) PlaceStone(col int, row int, isBlackTurn bool) error {
 		return fmt.Errorf("there is already a stone at position (%v,%v)", target.X, target.Y)
 	}
 
-	// 2. stone will capture
+	// 2. stone will have a liberty or would capture
+	potentialLiberties := goGame.GetNumLiberties(target.X, target.Y, isBlackTurn)
+	doesCapture := goGame.AttemptCapture(target.X, target.Y, isBlackTurn)
 
-	// 3. stone will have a liberty
-	potentialLiberties := goGame.GetPotentialNumLiberties(target.X, target.Y, isBlackTurn)
-	if potentialLiberties == 0 {
+	if potentialLiberties == 0 && !doesCapture {
 		return fmt.Errorf("stone would have no liberties and not capture")
 	}
 
-	// 4. stone will not recreate former board
+	// 3. stone will not recreate former board
+	//	TODO!
 
+	// Place stone
 	if isBlackTurn {
 		*intersection = BlackStone
 	} else {

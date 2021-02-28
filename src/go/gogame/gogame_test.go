@@ -2,7 +2,6 @@ package gogame_test
 
 import (
 	"fmt"
-	"reflect"
 	"testing"
 
 	"github.com/BrokanXYZ/GoWithGo/gogame"
@@ -173,14 +172,10 @@ func TestGetNumLiberties(t *testing.T) {
 
 func TestAttemptCapture(t *testing.T) {
 
-	var goGame gogame.GoGame
-	var ans bool
-
 	var attemptCaptureTests = []struct {
-		board         [][]uint8
-		target        gogame.Coord
-		expected      bool
-		expectedBoard [][]uint8
+		board    [][]uint8
+		target   gogame.Coord
+		expected int
 	}{
 		{
 			[][]uint8{
@@ -195,18 +190,7 @@ func TestAttemptCapture(t *testing.T) {
 				{0, 0, 0, 0, 0, 0, 0, 0, 0},
 			},
 			gogame.NewCoord(2, 4),
-			true,
-			[][]uint8{
-				{0, 0, 0, 0, 0, 0, 0, 0, 0},
-				{0, 0, 0, 0, 0, 0, 0, 0, 0},
-				{0, 0, 0, 0, 0, 0, 0, 0, 0},
-				{0, 0, 0, 1, 0, 0, 0, 0, 0},
-				{0, 0, 0, 0, 1, 0, 0, 0, 0},
-				{0, 0, 0, 1, 0, 0, 0, 0, 0},
-				{0, 0, 0, 0, 0, 0, 0, 0, 0},
-				{0, 0, 0, 0, 0, 0, 0, 0, 0},
-				{0, 0, 0, 0, 0, 0, 0, 0, 0},
-			},
+			1,
 		},
 		{
 			[][]uint8{
@@ -221,18 +205,7 @@ func TestAttemptCapture(t *testing.T) {
 				{0, 0, 0, 0, 0, 0, 0, 0, 0},
 			},
 			gogame.NewCoord(2, 4),
-			false,
-			[][]uint8{
-				{0, 0, 0, 0, 0, 0, 0, 0, 0},
-				{0, 0, 0, 0, 0, 0, 0, 0, 0},
-				{0, 0, 0, 0, 0, 0, 0, 0, 0},
-				{0, 0, 0, 1, 0, 0, 0, 0, 0},
-				{0, 0, 0, 2, 1, 0, 0, 0, 0},
-				{0, 0, 1, 2, 1, 0, 0, 0, 0},
-				{0, 0, 1, 2, 1, 0, 0, 0, 0},
-				{0, 0, 0, 0, 0, 0, 0, 0, 0},
-				{0, 0, 0, 0, 0, 0, 0, 0, 0},
-			},
+			0,
 		},
 		{
 			[][]uint8{
@@ -247,18 +220,7 @@ func TestAttemptCapture(t *testing.T) {
 				{0, 0, 0, 0, 0, 0, 0, 0, 0},
 			},
 			gogame.NewCoord(8, 1),
-			true,
-			[][]uint8{
-				{0, 0, 0, 0, 0, 0, 1, 0, 1},
-				{0, 0, 0, 0, 0, 0, 1, 0, 0},
-				{0, 0, 0, 0, 0, 0, 0, 1, 0},
-				{0, 0, 0, 0, 0, 0, 0, 0, 1},
-				{0, 0, 0, 0, 0, 0, 0, 0, 0},
-				{0, 0, 0, 0, 0, 0, 0, 0, 0},
-				{0, 0, 0, 0, 0, 0, 0, 0, 0},
-				{0, 0, 0, 0, 0, 0, 0, 0, 0},
-				{0, 0, 0, 0, 0, 0, 0, 0, 0},
-			},
+			3,
 		},
 		{
 			[][]uint8{
@@ -273,18 +235,7 @@ func TestAttemptCapture(t *testing.T) {
 				{0, 0, 0, 0, 1, 1, 0, 0, 0},
 			},
 			gogame.NewCoord(4, 6),
-			true,
-			[][]uint8{
-				{0, 0, 0, 0, 0, 0, 0, 0, 0},
-				{0, 0, 0, 0, 0, 0, 0, 0, 0},
-				{0, 0, 0, 0, 0, 0, 0, 0, 0},
-				{0, 0, 0, 0, 0, 0, 0, 0, 0},
-				{0, 0, 0, 1, 1, 0, 0, 0, 0},
-				{0, 0, 1, 0, 0, 1, 0, 0, 0},
-				{0, 0, 1, 0, 0, 0, 1, 0, 0},
-				{0, 0, 0, 1, 0, 0, 1, 0, 0},
-				{0, 0, 0, 0, 1, 1, 0, 0, 0},
-			},
+			6,
 		},
 		{
 			[][]uint8{
@@ -299,34 +250,89 @@ func TestAttemptCapture(t *testing.T) {
 				{0, 0, 0, 0, 1, 1, 0, 0, 0},
 			},
 			gogame.NewCoord(4, 6),
-			true,
+			3,
+		},
+		{
 			[][]uint8{
 				{0, 0, 0, 0, 0, 0, 0, 0, 0},
 				{0, 0, 0, 0, 0, 0, 0, 0, 0},
 				{0, 0, 0, 0, 0, 0, 0, 0, 0},
 				{0, 0, 0, 0, 0, 0, 0, 0, 0},
-				{0, 0, 0, 0, 1, 0, 0, 0, 0},
-				{0, 0, 1, 2, 2, 1, 0, 0, 0},
-				{0, 0, 1, 2, 0, 0, 1, 0, 0},
-				{0, 0, 0, 1, 0, 0, 1, 0, 0},
-				{0, 0, 0, 0, 1, 1, 0, 0, 0},
+				{0, 0, 0, 0, 0, 0, 0, 0, 0},
+				{0, 0, 0, 0, 0, 0, 0, 0, 0},
+				{0, 0, 0, 0, 1, 1, 1, 1, 1},
+				{0, 0, 0, 0, 1, 2, 2, 2, 2},
+				{0, 0, 0, 0, 1, 2, 0, 1, 1},
 			},
+			gogame.NewCoord(6, 8),
+			5,
 		},
 	}
 
 	for _, test := range attemptCaptureTests {
-		goGame = gogame.GoGame{Board: test.board, BoardSize: 9}
-		ans = goGame.AttemptCapture(test.target.X, test.target.Y, true)
-		boardIsCorrect := reflect.DeepEqual(goGame.Board, test.expectedBoard)
-		if ans != test.expected || !boardIsCorrect {
-			t.Errorf("\nGiven Board: \n%v \nTarget: %v\nAnswer: %v\nExpected: %v\nFinal Board: \n%v \nExpected Board: \n%v",
+		goGame := gogame.GoGame{Board: test.board, BoardSize: 9}
+		stonesToBeCaptured := goGame.AttemptCapture(test.target.X, test.target.Y, true)
+		ans := len(stonesToBeCaptured)
+		if ans != test.expected {
+			t.Errorf("\nGiven Board: \n%v \nTarget: %v\nAnswer: %v\nExpected: %v\nCaptured: %v",
 				getPrettyBoard(test.board),
 				test.target,
 				ans,
 				test.expected,
-				getPrettyBoard(goGame.Board),
-				getPrettyBoard(test.expectedBoard),
+				stonesToBeCaptured,
 			)
 		}
 	}
+}
+
+func TestCheckForKo(t *testing.T) {
+
+	var checkForKoTests = []struct {
+		board      [][]uint8
+		initMoves  []gogame.Coord
+		targetMove gogame.Coord
+		expected   bool
+	}{
+		{
+			[][]uint8{
+				{0, 0, 0, 0, 0, 0, 0, 0, 0},
+				{0, 0, 0, 0, 0, 0, 0, 0, 0},
+				{0, 0, 0, 0, 0, 0, 0, 0, 0},
+				{0, 0, 0, 0, 0, 0, 0, 0, 0},
+				{0, 0, 0, 0, 0, 0, 0, 0, 0},
+				{0, 0, 0, 0, 0, 0, 0, 0, 0},
+				{0, 0, 0, 0, 0, 0, 0, 0, 0},
+				{0, 0, 0, 0, 0, 0, 0, 0, 0},
+				{0, 0, 0, 0, 0, 0, 0, 0, 0},
+			},
+			[]gogame.Coord{
+				gogame.NewCoord(1, 0),
+				gogame.NewCoord(2, 0),
+				gogame.NewCoord(0, 1),
+				gogame.NewCoord(1, 1),
+				gogame.NewCoord(1, 2),
+				gogame.NewCoord(2, 2),
+				gogame.NewCoord(2, 3),
+				gogame.NewCoord(3, 1),
+				gogame.NewCoord(2, 1),
+			},
+			gogame.NewCoord(1, 1),
+			true,
+		},
+	}
+
+	/*for _, test := range attemptCaptureTests {
+		goGame := gogame.GoGame{Board: test.board, BoardSize: 9}
+		stonesToBeCaptured := goGame.AttemptCapture(test.target.X, test.target.Y, true)
+		ans := len(stonesToBeCaptured)
+		if ans != test.expected {
+			t.Errorf("\nGiven Board: \n%v \nTarget: %v\nAnswer: %v\nExpected: %v\nCaptured: %v",
+				getPrettyBoard(test.board),
+				test.target,
+				ans,
+				test.expected,
+				stonesToBeCaptured,
+			)
+		}
+	}*/
 }

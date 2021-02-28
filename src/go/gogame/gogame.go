@@ -2,12 +2,15 @@ package gogame
 
 import (
 	"fmt"
+	"strings"
 )
 
 // GoGame ...
 type GoGame struct {
-	BoardSize int
-	Board     [][]uint8
+	BoardSize              int
+	Board                  [][]uint8
+	BlackPreviousBoardHash string
+	WhitePreviousBoardHash string
 }
 
 // Coord ...
@@ -35,12 +38,85 @@ func NewGoGame(boardSize int) (GoGame, error) {
 		newBoard[i] = make([]uint8, boardSize)
 	}
 
-	return GoGame{Board: newBoard, BoardSize: boardSize}, nil
+	newGoGame := GoGame{
+		Board:                  newBoard,
+		BoardSize:              boardSize,
+		BlackPreviousBoardHash: "",
+		WhitePreviousBoardHash: "",
+	}
+
+	return newGoGame, nil
 }
 
 // NewCoord creates a new coordinate object. Allows for easy thinking in (x,y) terms
 func NewCoord(col int, row int) Coord {
 	return Coord{X: row, Y: col}
+}
+
+func (goGame *GoGame) attemptCaptureGroup(x int, y int, isBlackTurn bool, capturedStones *map[Coord]bool) {
+	toVisit := []Coord{{X: x, Y: y}}
+	oppStone := WhiteStone
+
+	if !isBlackTurn {
+		oppStone = BlackStone
+	}
+
+	for len(toVisit) > 0 {
+		current := toVisit[0]
+		(*capturedStones)[current] = true
+		toVisit = toVisit[1:]
+
+		adjIntersections := []Coord{
+			{X: current.X, Y: current.Y - 1},
+			{X: current.X, Y: current.Y + 1},
+			{X: current.X - 1, Y: current.Y},
+			{X: current.X + 1, Y: current.Y},
+		}
+
+		for _, adjInter := range adjIntersections {
+			coordIsInBoardRange := adjInter.Y >= 0 &&
+				adjInter.X >= 0 &&
+				adjInter.Y < goGame.BoardSize &&
+				adjInter.X < goGame.BoardSize
+
+			if coordIsInBoardRange && !(*capturedStones)[adjInter] {
+				inter := goGame.Board[adjInter.X][adjInter.Y]
+				if inter == uint8(oppStone) {
+					toVisit = append(toVisit, adjInter)
+				}
+			}
+		}
+	}
+}
+
+func (goGame *GoGame) getBoardHash() string {
+	var hash strings.Builder
+	hash.Grow(goGame.BoardSize * goGame.BoardSize)
+
+	for _, row := range goGame.Board {
+		for _, inter := range row {
+			hash.WriteByte(inter)
+		}
+	}
+
+	return hash.String()
+}
+
+// CheckForKo ...
+func (goGame *GoGame) CheckForKo(x int, y int, isBlackTurn bool) bool {
+	boardHash := goGame.getBoardHash()
+	previousPlayerBoardHash := goGame.BlackPreviousBoardHash
+	if !isBlackTurn {
+		previousPlayerBoardHash = goGame.WhitePreviousBoardHash
+	}
+
+	if isBlackTurn {
+		goGame.BlackPreviousBoardHash = boardHash
+	} else {
+		goGame.WhitePreviousBoardHash = boardHash
+	}
+
+	return boardHash == previousPlayerBoardHash
 }
 
 // GetNumLiberties returns the number of liberties that a stone would or does have.
@@ -89,45 +165,10 @@ func (goGame *GoGame) GetNumLiberties(x int, y int, isBlackTurn bool) int {
 	return numLiberties
 }
 
-func (goGame *GoGame) captureGroup(x int, y int, isBlackTurn bool, capturedStones *map[Coord]bool) {
-	toVisit := []Coord{{X: x, Y: y}}
-	oppStone := WhiteStone
-
-	if !isBlackTurn {
-		oppStone = BlackStone
-	}
-
-	for len(toVisit) > 0 {
-		current := toVisit[0]
-		(*capturedStones)[current] = true
-		goGame.Board[current.X][current.Y] = NoStone
-		toVisit = toVisit[1:]
-
-		adjIntersections := []Coord{
-			{X: current.X, Y: current.Y - 1},
-			{X: current.X, Y: current.Y + 1},
-			{X: current.X - 1, Y: current.Y},
-			{X: current.X + 1, Y: current.Y},
-		}
-
-		for _, adjInter := range adjIntersections {
-			coordIsInBoardRange := adjInter.Y >= 0 &&
-				adjInter.X >= 0 &&
-				adjInter.Y < goGame.BoardSize &&
-				adjInter.X < goGame.BoardSize
-
-			if coordIsInBoardRange && !(*capturedStones)[adjInter] {
-				inter := goGame.Board[adjInter.X][adjInter.Y]
-				if inter == uint8(oppStone) {
-					toVisit = append(toVisit, adjInter)
-				}
-			}
-		}
-	}
-}
-
-// AttemptCapture ...
-func (goGame *GoGame) AttemptCapture(x int, y int, isBlackTurn bool) bool {
+// AttemptCapture makes an attempt to capture stones as a result of placing a stone
+// at the specified location. Ultimately, the board is not modified. The returned
+// slice contains the stones that would be captured.
+func (goGame *GoGame) AttemptCapture(x int, y int, isBlackTurn bool) []Coord {
 	capturedStones := make(map[Coord]bool)
 	sameStone := BlackStone
 	oppStone := WhiteStone
@@ -157,13 +198,18 @@ func (goGame *GoGame) AttemptCapture(x int, y int, isBlackTurn bool) bool {
 			stone := goGame.Board[adjInter.X][adjInter.Y]
 			if stone == uint8(oppStone) {
 				if goGame.GetNumLiberties(adjInter.X, adjInter.Y, !isBlackTurn) == 0 {
-					goGame.captureGroup(adjInter.X, adjInter.Y, isBlackTurn, &capturedStones)
+					goGame.attemptCaptureGroup(adjInter.X, adjInter.Y, isBlackTurn, &capturedStones)
 				}
 			}
 		}
 	}
 
-	return len(capturedStones) > 0
+	var result []Coord
+	for k := range capturedStones {
+		result = append(result, k)
+	}
+
+	return result
 }
 
 // PlaceStone attempts to place stone at given (x,y) Coords on the board
@@ -179,20 +225,39 @@ func (goGame *GoGame) PlaceStone(col int, row int, isBlackTurn bool) error {
 
 	// 2. stone will have a liberty or would capture
 	potentialLiberties := goGame.GetNumLiberties(target.X, target.Y, isBlackTurn)
-	doesCapture := goGame.AttemptCapture(target.X, target.Y, isBlackTurn)
+	stonesToBeCaptured := goGame.AttemptCapture(target.X, target.Y, isBlackTurn)
 
-	if potentialLiberties == 0 && !doesCapture {
+	if potentialLiberties == 0 && len(stonesToBeCaptured) == 0 {
 		return fmt.Errorf("stone would have no liberties and not capture")
 	}
 
-	// 3. stone will not recreate former board
-	//	TODO!
-
-	// Place stone
+	// Place stone and capture
 	if isBlackTurn {
 		*intersection = BlackStone
 	} else {
 		*intersection = WhiteStone
+	}
+	for _, coord := range stonesToBeCaptured {
+		goGame.Board[coord.X][coord.Y] = NoStone
+	}
+
+	// 3.Ko:  one may not play in such a way as to recreate the board
+	// 		  position following one's previous move.
+	koViolated := goGame.CheckForKo(target.X, target.Y, isBlackTurn)
+	if koViolated {
+		// revert board changes
+		*intersection = NoStone
+
+		oppStone := WhiteStone
+		if !isBlackTurn {
+			oppStone = BlackStone
+		}
+
+		for _, coord := range stonesToBeCaptured {
+			goGame.Board[coord.X][coord.Y] = uint8(oppStone)
+		}
+
+		return fmt.Errorf("Ko: one may not play in such a way as to recreate the board position following one's previous move")
 	}
 
 	return nil

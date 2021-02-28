@@ -156,7 +156,7 @@ func (goGame *GoGame) AttemptCapture(x int, y int, isBlackTurn bool) bool {
 		if coordsIsInBoardRange && !capturedStones[adjInter] {
 			stone := goGame.Board[adjInter.X][adjInter.Y]
 			if stone == uint8(oppStone) {
-				if goGame.GetNumLiberties(adjInter.X, adjInter.Y, isBlackTurn) == 0 {
+				if goGame.GetNumLiberties(adjInter.X, adjInter.Y, !isBlackTurn) == 0 {
 					goGame.captureGroup(adjInter.X, adjInter.Y, isBlackTurn, &capturedStones)
 				}
 			}

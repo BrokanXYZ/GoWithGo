@@ -102,6 +102,22 @@ func (goGame *GoGame) getBoardHash() string {
 	return hash.String()
 }
 
+// CaptureStones ...
+func (goGame *GoGame) CaptureStones(stonesToBeCaptured []Coord) {
+	for _, coord := range stonesToBeCaptured {
+		goGame.Board[coord.X][coord.Y] = NoStone
+	}
+}
+
+// SetStone ...
+func (goGame *GoGame) SetStone(x int, y int, isBlack bool) {
+	if isBlack {
+		goGame.Board[x][y] = BlackStone
+	} else {
+		goGame.Board[x][y] = WhiteStone
+	}
+}
+
 // CheckForKo ...
 func (goGame *GoGame) CheckForKo(x int, y int, isBlackTurn bool) bool {
 	boardHash := goGame.getBoardHash()
@@ -216,10 +232,10 @@ func (goGame *GoGame) AttemptCapture(x int, y int, isBlackTurn bool) []Coord {
 func (goGame *GoGame) PlaceStone(col int, row int, isBlackTurn bool) error {
 
 	target := NewCoord(col, row)
-	intersection := &goGame.Board[target.X][target.Y]
+	targetInter := &goGame.Board[target.X][target.Y]
 
 	// 1. space is empty
-	if *intersection != NoStone {
+	if *targetInter != NoStone {
 		return fmt.Errorf("there is already a stone at position (%v,%v)", target.X, target.Y)
 	}
 
@@ -232,21 +248,15 @@ func (goGame *GoGame) PlaceStone(col int, row int, isBlackTurn bool) error {
 	}
 
 	// Place stone and capture
-	if isBlackTurn {
-		*intersection = BlackStone
-	} else {
-		*intersection = WhiteStone
-	}
-	for _, coord := range stonesToBeCaptured {
-		goGame.Board[coord.X][coord.Y] = NoStone
-	}
+	goGame.SetStone(target.X, target.Y, isBlackTurn)
+	goGame.CaptureStones(stonesToBeCaptured)
 
 	// 3.Ko:  one may not play in such a way as to recreate the board
 	// 		  position following one's previous move.
 	koViolated := goGame.CheckForKo(target.X, target.Y, isBlackTurn)
 	if koViolated {
 		// revert board changes
-		*intersection = NoStone
+		*targetInter = NoStone
 
 		oppStone := WhiteStone
 		if !isBlackTurn {

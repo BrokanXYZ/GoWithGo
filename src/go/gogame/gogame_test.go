@@ -306,33 +306,50 @@ func TestCheckForKo(t *testing.T) {
 				{0, 0, 0, 0, 0, 0, 0, 0, 0},
 			},
 			[]gogame.Coord{
-				gogame.NewCoord(1, 0),
-				gogame.NewCoord(2, 0),
-				gogame.NewCoord(0, 1),
-				gogame.NewCoord(1, 1),
-				gogame.NewCoord(1, 2),
-				gogame.NewCoord(2, 2),
-				gogame.NewCoord(2, 3),
-				gogame.NewCoord(3, 1),
-				gogame.NewCoord(2, 1),
+				{1, 0},
+				{2, 0},
+				{0, 1},
+				{1, 1},
+				{1, 2},
+				{2, 2},
+				{2, 3},
+				{3, 1},
+				{2, 1},
 			},
-			gogame.NewCoord(1, 1),
+			gogame.Coord{1, 1},
 			true,
 		},
 	}
 
-	/*for _, test := range attemptCaptureTests {
+	for _, test := range checkForKoTests {
 		goGame := gogame.GoGame{Board: test.board, BoardSize: 9}
-		stonesToBeCaptured := goGame.AttemptCapture(test.target.X, test.target.Y, true)
-		ans := len(stonesToBeCaptured)
+		isBlackTurn := true
+		var moveMinus2 string
+		var moveMinus1 string
+		for i, move := range test.initMoves {
+			goGame.PlaceStone(move.X, move.Y, isBlackTurn)
+			isBlackTurn = !isBlackTurn
+			if i == len(test.initMoves)-1 {
+				moveMinus1 = getPrettyBoard(goGame.Board)
+			}
+			if i == len(test.initMoves)-2 {
+				moveMinus2 = getPrettyBoard(goGame.Board)
+			}
+		}
+
+		stonesToBeCaptured := goGame.AttemptCapture(test.targetMove.X, test.targetMove.Y, isBlackTurn)
+		goGame.SetStone(test.targetMove.X, test.targetMove.Y, isBlackTurn)
+		goGame.CaptureStones(stonesToBeCaptured)
+		ans := goGame.CheckForKo(test.targetMove.X, test.targetMove.Y, isBlackTurn)
+
 		if ans != test.expected {
-			t.Errorf("\nGiven Board: \n%v \nTarget: %v\nAnswer: %v\nExpected: %v\nCaptured: %v",
-				getPrettyBoard(test.board),
-				test.target,
+			t.Errorf("\nMove n-2: \n%v \n\nMove n-1: \n%v \n\nMove n: \n%v \n\nAnswer: %v\nExpected: %v",
+				moveMinus2,
+				moveMinus1,
+				getPrettyBoard(goGame.Board),
 				ans,
 				test.expected,
-				stonesToBeCaptured,
 			)
 		}
-	}*/
+	}
 }

@@ -1,6 +1,6 @@
 declare global {
     var Go: any
-    var placeStone: (col: number, row: number, isBlackTurn: boolean) => 
+    var tryMove: (col: number, row: number, isBlackTurn: boolean) => 
         {board: number[][], error: string}
     var newGoGame: (boardSize: number) => {board: number[][], error: string}
 }

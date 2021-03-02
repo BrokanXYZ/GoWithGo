@@ -133,7 +133,7 @@ function GoBoard({isWasmInitialized}: GoBoardProps) {
       }
       else
       {
-        const { board, error } = placeStone(cellCol, cellRow, isBlackTurn);
+        const { board, error } = tryMove(cellCol, cellRow, isBlackTurn);
         if(error)
         {
           console.log(`Unable to place stone\nReason: ${error}`);

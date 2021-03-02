@@ -102,14 +102,15 @@ func (goGame *GoGame) getBoardHash() string {
 	return hash.String()
 }
 
-// CaptureStones ...
+// CaptureStones removes stones from specified coordinates
 func (goGame *GoGame) CaptureStones(stonesToBeCaptured []Coord) {
 	for _, coord := range stonesToBeCaptured {
 		goGame.Board[coord.X][coord.Y] = NoStone
 	}
 }
 
-// SetStone ...
+// SetStone forcefully sets the target intersection on the board to the current
+// player's stone.
 func (goGame *GoGame) SetStone(x int, y int, isBlack bool) {
 	if isBlack {
 		goGame.Board[x][y] = BlackStone
@@ -118,7 +119,8 @@ func (goGame *GoGame) SetStone(x int, y int, isBlack bool) {
 	}
 }
 
-// CheckForKo ...
+// CheckForKo returns true if the rule of Ko has been violated at the target location.
+// The move at the target location must have already been made.
 func (goGame *GoGame) CheckForKo(x int, y int, isBlackTurn bool) bool {
 	boardHash := goGame.getBoardHash()
 	previousPlayerBoardHash := goGame.BlackPreviousBoardHash
@@ -228,8 +230,11 @@ func (goGame *GoGame) AttemptCapture(x int, y int, isBlackTurn bool) []Coord {
 	return result
 }
 
-// PlaceStone attempts to place stone at given (x,y) Coords on the board
-func (goGame *GoGame) PlaceStone(col int, row int, isBlackTurn bool) error {
+// TryMove attempts to place stone at given (x,y) Coords on the board.
+// The stone will be successfully placed if it is a legal move. Otherwise,
+// an error will be returned specifying the reason. If the move will capture
+// stones, then they will be.
+func (goGame *GoGame) TryMove(col int, row int, isBlackTurn bool) error {
 
 	target := NewCoord(col, row)
 	targetInter := &goGame.Board[target.X][target.Y]
@@ -247,7 +252,7 @@ func (goGame *GoGame) PlaceStone(col int, row int, isBlackTurn bool) error {
 		return fmt.Errorf("stone would have no liberties and not capture")
 	}
 
-	// Place stone and capture
+	// set stone and capture
 	goGame.SetStone(target.X, target.Y, isBlackTurn)
 	goGame.CaptureStones(stonesToBeCaptured)
 

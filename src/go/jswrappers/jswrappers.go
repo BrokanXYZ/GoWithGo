@@ -42,7 +42,7 @@ func placeStoneWrapper() js.Func {
 		row := args[1].Int()
 		isBlackTurn := args[2].Bool()
 
-		err := goGame.PlaceStone(col, row, isBlackTurn)
+		err := goGame.TryMove(col, row, isBlackTurn)
 
 		if err != nil {
 			result["error"] = err.Error()

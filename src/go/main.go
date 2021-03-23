@@ -9,5 +9,5 @@ import (
 func main() {
 	fmt.Println("Go WASM is intialized!")
 	jswrappers.RegisterCallbacks()
-	<-make(chan bool)
+	<-make(chan struct{})
 }

@@ -32,7 +32,7 @@ func newGoGameWrapper() js.Func {
 	return wrapperFunc
 }
 
-func placeStoneWrapper() js.Func {
+func tryMoveWrapper() js.Func {
 	wrapperFunc := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		result := map[string]interface{}{
 			"board": nil,
@@ -74,5 +74,5 @@ func getJsBoard(goBoard [][]uint8, boardSize int) js.Value {
 // RegisterCallbacks assigns all wrapper functions to the Javascript Global object
 func RegisterCallbacks() {
 	js.Global().Set("newGoGame", newGoGameWrapper())
-	js.Global().Set("placeStone", placeStoneWrapper())
+	js.Global().Set("tryMove", tryMoveWrapper())
 }

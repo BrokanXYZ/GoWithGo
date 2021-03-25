@@ -4,11 +4,11 @@ import ActionBar from './components/ActionBar';
 import initWasm from "./utilities/initWasm";
 import useWindowDimensions from './hooks/useWindowDimensions';
 import { makeStyles } from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
 
 const useStyles = makeStyles((theme) => ({
   goBoardDiv: (actionBarHeight) => ({
-    backgroundColor: "lightblue",
-    //textAlign: "center",
+    backgroundColor: theme.palette.primary.main,
     position: "absolute",
     top: "0px",
     bottom: `${actionBarHeight}px`,
@@ -23,7 +23,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // TODO: Handle window resize
-// TODO: Center board and handle offset in click event
 function App() {  
   const windowDimensions = useWindowDimensions();
   const [isWasmInitialized, setIsWasmInitialized] = React.useState<boolean>(false);
@@ -46,18 +45,26 @@ function App() {
 
   return (
     <main>
-        <div className={classes.goBoardDiv}>
-          <GoBoard 
-            canvasSize={canvasSize}
-            isWasmInitialized={isWasmInitialized}
-            isBlackTurn={isBlackTurn}
-            setIsBlackTurn={setIsBlackTurn}
-          />
-        </div>
+        <Grid 
+          container 
+          className={classes.goBoardDiv} 
+          justify="center" 
+          alignItems="center"
+        >
+          <Grid item>
+            <GoBoard 
+              canvasSize={canvasSize}
+              isWasmInitialized={isWasmInitialized}
+              isBlackTurn={isBlackTurn}
+              setIsBlackTurn={setIsBlackTurn}
+            />
+          </Grid>
+        </Grid>
         <div className={classes.actionBarDiv}>
           <ActionBar 
             actionBarHeight={actionBarHeight} 
             isBlackTurn={isBlackTurn}
+            canvasSize={canvasSize}
           />
         </div>
     </main>

@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
   canvas: {
-    backgroundColor: "lightblue",
+    backgroundColor: theme.palette.primary.main,
   },
 }));
 
@@ -125,8 +125,19 @@ function GoBoard({isWasmInitialized, canvasSize, isBlackTurn, setIsBlackTurn}: G
     }
 
     const handleCanvasClick=(event: React.MouseEvent, isBlackTurn: boolean)=>{
-      const mousePositionX: number = event.clientX;
-      const mousePositionY: number = event.clientY;
+
+      let mousePositionX: number = event.clientX;
+      let mousePositionY: number = event.clientY;
+
+      if(canvasRef && canvasRef.current) {
+        if(canvasRef.current.offsetLeft) {
+          mousePositionX -= canvasRef.current.offsetLeft;
+        }
+        if(canvasRef.current.offsetTop) {
+          mousePositionY -= canvasRef.current.offsetTop;
+        }
+      }
+
       const cellCol = (mousePositionX-(gridBuffer/2))/columnSpacing;
       const cellRow = (mousePositionY-(gridBuffer/2))/rowSpacing;
 

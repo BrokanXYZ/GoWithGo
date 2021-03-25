@@ -14,12 +14,20 @@ const useStyles = makeStyles((theme) => ({
 
 type ActionBarProps = {
   actionBarHeight: number,
-  isBlackTurn: boolean
+  isBlackTurn: boolean,
+  canvasSize: number
 }
 
-function ActionBar({actionBarHeight, isBlackTurn}: ActionBarProps) {
+function ActionBar({actionBarHeight, isBlackTurn, canvasSize}: ActionBarProps) {
 
   const classes = useStyles(actionBarHeight);
+
+  // Constant determined by eyeballin' it
+  const stoneRadius = canvasSize * 0.0389;
+  const stoneSvgPath = 
+  ` M 0, ${stoneRadius} 
+    a ${stoneRadius},${stoneRadius} 0 1,0 ${stoneRadius*2},0 
+    a ${stoneRadius},${stoneRadius} 0 1,0 ${stoneRadius*-2},0`;
 
   return (
     <Grid 
@@ -33,8 +41,10 @@ function ActionBar({actionBarHeight, isBlackTurn}: ActionBarProps) {
           New Game
         </Button>
       </Grid>
-      <Grid item style={{color: "white"}}>
-        Turn: 
+      <Grid item>
+        <svg width={stoneRadius*2} height={stoneRadius*2}>
+          <path d={stoneSvgPath} fill={isBlackTurn ? "black" : "white"}/>
+        </svg>
       </Grid>
       <Grid item>
         <Button variant="contained">

@@ -1,44 +1,54 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Go with Go
 
-## Available Scripts
+### About
 
-In the project directory, you can run:
+A Progressive Web App for playing the game of [Go](<https://en.wikipedia.org/wiki/Go_(game)>)! **Go with Go** is heavily inspired by [Cosumi](https://www.cosumi.net/en/). I love playing Go on Cosumi, but I dislike the design of the AI. It is slow to act and requires the client to have an active internet connection. My primary goal for this app is to create an enjoyable offline single-player Go experience. My secondary goal is to bring the game of Go to a wider audience. I plan to accomplish that goal with new variants of traditional Go and a _snazzy_ UI.
 
-### `npm start`
+### Tech :construction:
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- ReactJs
+- Create-React-App
+- Progressive Web App (PWA)
+- Golang
+- Web Assembly
+- Google Cloud Platform?
+- TinyGo?
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+---
 
-### `npm test`
+## Release Notes
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### v3.0 - Arcade Gamemodes?
 
-### `npm run build`
+### v2.0 - Single Player - Offline AI
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+#### v1.1 - Chinese Ruleset
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+### v1.0 - Local Multiplayer - Japanese Rules :construction:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+- **0.** Tech Stack Setup
+  - [x] PWA - Create-React-App
+  - [x] Golang => WASM
+- **1.** Game Logic (Japanese rules)
+  - [x] Start New Game
+  - [ ] Select Board Size (5x5, 9x9, 13x13, 19x19)
+  - [ ] Scoring
+  - [ ] Pass turn
+  - [x] Place stone
+    - [x] Empty check
+    - [x] Capture check
+    - [x] Liberty check
+    - [x] Ko check
+- **2.** UI
+  - [x] Buttons
+    - [x] Pass
+    - [x] New game
+  - [ ] Score screen
+  - [x] Turn indicator
+  - [ ] Color scheme
+  - [x] Board
+  - [x] Stones
+  - [ ] Mobile friendly controls
+    - [ ] Scrollable board
+    - [ ] Zoomable board
+    - [ ] Double tap to place stone

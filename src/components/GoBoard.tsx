@@ -14,15 +14,18 @@ enum Intersection {
 }
 
 type GoBoardProps = {
-  isWasmInitialized: Boolean
+  isWasmInitialized: boolean,
+  canvasSize: number,
+  isBlackTurn: boolean,
+  setIsBlackTurn: Function
 }
 
-function GoBoard({isWasmInitialized}: GoBoardProps) {
+function GoBoard({isWasmInitialized, canvasSize, isBlackTurn, setIsBlackTurn}: GoBoardProps) {
 
     const classes = useStyles();
 
-    const canvasWidth = 500;
-    const canvasHeight = 500;
+    const canvasWidth = canvasSize;
+    const canvasHeight = canvasSize;
     const boardSize = 9;
 
     // Space b/w edge of board and canvas
@@ -31,14 +34,14 @@ function GoBoard({isWasmInitialized}: GoBoardProps) {
     const rowSpacing = canvasHeight/(boardSize+1);
     const columnSpacing = canvasWidth/(boardSize+1);
 
-    const stoneRadius = 20;
+    // Constant determined by eyeballin' it
+    const stoneRadius = canvasSize * 0.0389;
     const stoneSvgPath = 
       ` M 0, ${stoneRadius} 
         a ${stoneRadius},${stoneRadius} 0 1,0 ${stoneRadius*2},0 
         a ${stoneRadius},${stoneRadius} 0 1,0 ${stoneRadius*-2},0`;
     const stone = new Path2D(stoneSvgPath);
 
-    const [isBlackTurn, setIsBlackTurn] = React.useState<boolean>(true);
     const [board, setBoard] = React.useState<number[][]>([]);
 
     React.useEffect(()=>{
@@ -121,7 +124,7 @@ function GoBoard({isWasmInitialized}: GoBoardProps) {
       ctx.setTransform(1, 0, 0, 1, 0, 0);
     }
 
-    const handleCanvasClick=(event: React.MouseEvent)=>{
+    const handleCanvasClick=(event: React.MouseEvent, isBlackTurn: boolean)=>{
       const mousePositionX: number = event.clientX;
       const mousePositionY: number = event.clientY;
       const cellCol = (mousePositionX-(gridBuffer/2))/columnSpacing;
@@ -152,7 +155,7 @@ function GoBoard({isWasmInitialized}: GoBoardProps) {
         ref={canvasRef}
         width={canvasWidth}
         height={canvasHeight}
-        onClick={handleCanvasClick} 
+        onClick={(event)=>handleCanvasClick(event, isBlackTurn)} 
     />
   );
 }

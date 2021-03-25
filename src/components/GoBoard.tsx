@@ -17,10 +17,11 @@ type GoBoardProps = {
   isWasmInitialized: boolean,
   canvasSize: number,
   isBlackTurn: boolean,
-  setIsBlackTurn: Function
+  setIsBlackTurn: Function,
+  newGameFlag: boolean
 }
 
-function GoBoard({isWasmInitialized, canvasSize, isBlackTurn, setIsBlackTurn}: GoBoardProps) {
+function GoBoard({isWasmInitialized, canvasSize, isBlackTurn, setIsBlackTurn, newGameFlag}: GoBoardProps) {
 
     const classes = useStyles();
 
@@ -44,6 +45,9 @@ function GoBoard({isWasmInitialized, canvasSize, isBlackTurn, setIsBlackTurn}: G
 
     const [board, setBoard] = React.useState<number[][]>([]);
 
+    // Create new game when...
+    //    WASM has been initialized OR 
+    //    flag is triggered
     React.useEffect(()=>{
       if(isWasmInitialized) {
         const {board, error} = newGoGame(boardSize);
@@ -51,10 +55,11 @@ function GoBoard({isWasmInitialized, canvasSize, isBlackTurn, setIsBlackTurn}: G
         if(error !== null) {
           console.error(error);
         } else {
+          setIsBlackTurn(true);
           setBoard(board);
         }
       }
-    }, [isWasmInitialized])
+    }, [isWasmInitialized, newGameFlag])
 
     const canvasRef = React.useRef<HTMLCanvasElement>(null);
     let canvasElement: HTMLCanvasElement | null = null;

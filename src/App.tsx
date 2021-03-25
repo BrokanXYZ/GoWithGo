@@ -27,6 +27,9 @@ function App() {
   const windowDimensions = useWindowDimensions();
   const [isWasmInitialized, setIsWasmInitialized] = React.useState<boolean>(false);
   const [isBlackTurn, setIsBlackTurn] = React.useState<boolean>(true);
+  const [newGameFlag, setNewGameFlag] = React.useState<boolean>(false);
+
+  const createNewGame = () => {setNewGameFlag(!newGameFlag)};
 
   const actionBarHeight = 100;
   let canvasSize: number;
@@ -57,6 +60,7 @@ function App() {
               isWasmInitialized={isWasmInitialized}
               isBlackTurn={isBlackTurn}
               setIsBlackTurn={setIsBlackTurn}
+              newGameFlag={newGameFlag}
             />
           </Grid>
         </Grid>
@@ -65,6 +69,7 @@ function App() {
             actionBarHeight={actionBarHeight} 
             isBlackTurn={isBlackTurn}
             canvasSize={canvasSize}
+            createNewGame={createNewGame}
           />
         </div>
     </main>

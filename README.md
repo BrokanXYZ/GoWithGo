@@ -28,7 +28,7 @@ A Progressive Web App for playing the game of [Go](<https://en.wikipedia.org/wik
 
 - **0.** Tech Stack Setup
   - [x] PWA - Create-React-App
-  - [x] Golang => WASM
+  - [x] Golang --> WASM
 - **1.** Game Logic (Japanese rules)
   - [x] Start New Game
   - [ ] Select Board Size (5x5, 9x9, 13x13, 19x19)
@@ -45,7 +45,7 @@ A Progressive Web App for playing the game of [Go](<https://en.wikipedia.org/wik
     - [x] New game
   - [ ] Score screen
   - [x] Turn indicator
-  - [ ] Color scheme
+  - [x] Color scheme
   - [x] Board
   - [x] Stones
   - [ ] Mobile friendly controls

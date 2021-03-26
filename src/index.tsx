@@ -5,7 +5,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import 'fontsource-roboto';
 
 import App from './App';
-import theme from './utilities/theme.js';
+import theme from './utilities/theme';
 import * as serviceWorkerRegistration from './utilities/serviceWorkerRegistration';
 import reportWebVitals from './utilities/reportWebVitals';
 

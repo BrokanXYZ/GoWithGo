@@ -34,10 +34,10 @@ export default function AlertDialog({isOpen, setIsOpen, title, body, action}: Al
             </DialogContentText>
             </DialogContent>
             <DialogActions>
-            <Button onClick={handleClose} color="primary">
+            <Button onClick={handleClose}>
                 No
             </Button>
-            <Button onClick={()=>{action();handleClose();}} color="primary" autoFocus>
+            <Button onClick={()=>{action();handleClose();}} autoFocus>
                 Yes
             </Button>
             </DialogActions>

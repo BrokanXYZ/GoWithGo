@@ -10,6 +10,11 @@ const useStyles = makeStyles((theme) => ({
     height: `${actionBarHeight}px`,
     fontSize: "16px"
   }),
+  nextTurnGrid: {
+    backgroundColor: theme.palette.secondary.main,
+    padding: "8px 8px 2px 8px",
+    borderRadius: "2px"
+  }
 }));
 
 type ActionBarProps = {
@@ -48,17 +53,17 @@ function ActionBar({actionBarHeight, isBlackTurn, canvasSize, createNewGame}: Ac
         className={classes.rootGrid}
       >
         <Grid item>
-          <Button variant="contained" onClick={()=>setIsOpen(true)}>
+          <Button color="secondary" variant="contained" onClick={()=>setIsOpen(true)}>
             New Game
           </Button>
         </Grid>
-        <Grid item>
+        <Grid item className={classes.nextTurnGrid}>
           <svg width={stoneRadius*2} height={stoneRadius*2}>
             <path d={stoneSvgPath} fill={isBlackTurn ? "black" : "white"}/>
           </svg>
         </Grid>
         <Grid item>
-          <Button variant="contained">
+          <Button color="secondary" variant="contained">
             Pass
           </Button>
         </Grid>

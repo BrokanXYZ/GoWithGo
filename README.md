@@ -11,29 +11,45 @@ A Progressive Web App for playing the game of [Go](<https://en.wikipedia.org/wik
 - Progressive Web App (PWA)
 - Golang
 - Web Assembly
-- Google Cloud Platform?
-- TinyGo?
+- Google Cloud Platform
+- TinyGo
 
 ---
 
-## Release Notes
+# Release Notes
 
-### v3.0 - Arcade Gamemodes?
+## v3.0 - Online Multiplayer
 
-### v2.0 - Single Player - Offline AI
+## v2.0 - Arcade Gamemode(s)
 
-#### v1.1 - Chinese Ruleset
+#### v1.2 - Chinese Ruleset
 
-### v1.0 - Local Multiplayer - Japanese Rules :construction:
+#### v1.1 - TinyGo
 
-- **0.** Tech Stack Setup
+- [ ] Compile Golang to WASM using TinyGo
+
+## v1.0 - Offline Single Player
+
+- [ ] Publish on Google Play
+- [ ] Offline AI
+- [ ] Select Board Size (5x5, 9x9, 13x13, 19x19)
+- [ ] Mobile friendly controls
+  - [ ] Scrollable board
+  - [ ] Zoomable board
+  - [ ] Double tap to place stone
+- [ ] Main Menu
+- [ ] Logo
+
+## v0.0 - Local Multiplayer :construction:
+
+- **0. Tech Stack Setup**
   - [x] PWA - Create-React-App
   - [x] Golang --> WASM
-- **1.** Game Logic (Japanese rules)
+  - [ ] Host on GCP
+- **1. Game Logic (Japanese rules)**
   - [x] Start New Game
-  - [ ] Select Board Size (5x5, 9x9, 13x13, 19x19)
   - [ ] Scoring
-    - Territory vs Area
+    - Territory
     - Komi
   - [ ] Pass turn
   - [x] Place stone
@@ -41,7 +57,7 @@ A Progressive Web App for playing the game of [Go](<https://en.wikipedia.org/wik
     - [x] Capture check
     - [x] Liberty check
     - [x] Ko check
-- **2.** UI
+- **2. UI**
   - [x] Buttons
     - [x] Pass
     - [x] New game
@@ -50,7 +66,5 @@ A Progressive Web App for playing the game of [Go](<https://en.wikipedia.org/wik
   - [x] Color scheme
   - [x] Board
   - [x] Stones
-  - [ ] Mobile friendly controls
-    - [ ] Scrollable board
-    - [ ] Zoomable board
-    - [ ] Double tap to place stone
+- **3. Other**
+  - [ ] Refactor GoGame funcs to use Game obj

@@ -327,7 +327,7 @@ func TestCheckForKo(t *testing.T) {
 		var moveMinus2 string
 		var moveMinus1 string
 		for i, move := range test.initMoves {
-			goGame.TryMove(move.X, move.Y, isBlackTurn)
+			goGame.TryPlaceStone(move.X, move.Y, isBlackTurn)
 			isBlackTurn = !isBlackTurn
 			if i == len(test.initMoves)-1 {
 				moveMinus1 = getPrettyBoard(goGame.Board)

@@ -66,5 +66,3 @@ A Progressive Web App for playing the game of [Go](<https://en.wikipedia.org/wik
   - [x] Color scheme
   - [x] Board
   - [x] Stones
-- **3. Other**
-  - [ ] Refactor GoGame funcs to use Game obj

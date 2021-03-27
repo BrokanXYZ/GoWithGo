@@ -230,11 +230,11 @@ func (goGame *GoGame) AttemptCapture(x int, y int, isBlackTurn bool) []Coord {
 	return result
 }
 
-// TryMove attempts to place stone at given (x,y) Coords on the board.
+// TryPlaceStone attempts to place stone at given (x,y) Coords on the board.
 // The stone will be successfully placed if it is a legal move. Otherwise,
 // an error will be returned specifying the reason. If the move will capture
 // stones, then they will be.
-func (goGame *GoGame) TryMove(col int, row int, isBlackTurn bool) error {
+func (goGame *GoGame) TryPlaceStone(col int, row int, isBlackTurn bool) error {
 
 	target := NewCoord(col, row)
 	targetInter := &goGame.Board[target.X][target.Y]

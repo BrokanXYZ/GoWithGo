@@ -51,7 +51,7 @@ A Progressive Web App for playing the game of [Go](<https://en.wikipedia.org/wik
 - **1. Game Logic (Japanese rules)**
   - [x] Start New Game
   - [ ] Scoring
-  - [ ] Pass turn
+  - [x] Pass turn
   - [x] Place stone
     - [x] Empty check
     - [x] Capture check

@@ -68,6 +68,7 @@ function App() {
           <ActionBar 
             actionBarHeight={actionBarHeight} 
             isBlackTurn={isBlackTurn}
+            setIsBlackTurn={setIsBlackTurn}
             canvasSize={canvasSize}
             createNewGame={createNewGame}
           />

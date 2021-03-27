@@ -54,7 +54,7 @@ func getPrettyBoard(board [][]uint8) string {
 	return prettyBoard
 }
 
-func TestGetNumLiberties(t *testing.T) {
+func Test_GetNumLiberties(t *testing.T) {
 
 	var goGame gogame.GoGame
 	var ans int
@@ -170,7 +170,7 @@ func TestGetNumLiberties(t *testing.T) {
 	}
 }
 
-func TestAttemptCapture(t *testing.T) {
+func Test_AttemptCapture(t *testing.T) {
 
 	var attemptCaptureTests = []struct {
 		board    [][]uint8
@@ -285,7 +285,7 @@ func TestAttemptCapture(t *testing.T) {
 	}
 }
 
-func TestCheckForKo(t *testing.T) {
+func Test_CheckForKo(t *testing.T) {
 
 	var checkForKoTests = []struct {
 		board      [][]uint8
@@ -351,5 +351,31 @@ func TestCheckForKo(t *testing.T) {
 				test.expected,
 			)
 		}
+	}
+}
+
+func Test_PassTurn(t *testing.T) {
+	goGame, _ := gogame.NewGoGame(9)
+
+	// BLACK - place stone
+	goGame.TryPlaceStone(0, 0, true)
+	// WHITE - place stone
+	goGame.TryPlaceStone(0, 1, false)
+	// BLACK - pass
+	isGameOver, _, _ := goGame.PassTurn(true)
+	if isGameOver != false {
+		t.Errorf("\nisGameOver: %v\nExpected: false", isGameOver)
+	}
+	// WHITE - place stone
+	goGame.TryPlaceStone(0, 2, false)
+	// BLACK - pass
+	isGameOver, _, _ = goGame.PassTurn(true)
+	if isGameOver != false {
+		t.Errorf("\nisGameOver: %v\nExpected: false", isGameOver)
+	}
+	// WHITE - pass
+	isGameOver, _, _ = goGame.PassTurn(false)
+	if isGameOver != true {
+		t.Errorf("\nisGameOver: %v\nExpected: true", isGameOver)
 	}
 }

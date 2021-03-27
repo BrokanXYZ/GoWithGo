@@ -3,6 +3,8 @@ declare global {
     var tryPlaceStone: (col: number, row: number, isBlackTurn: boolean) => 
         {board: number[][], error: string}
     var newGoGame: (boardSize: number) => {board: number[][], error: string}
+    var passTurn: (isBlackTurn: boolean) => 
+        {isGameOver: boolean, playerOneScore: number, playerTwoScore: number}
 }
 
 const initWasm = async function(setIsWasmInitialized: React.Dispatch<React.SetStateAction<boolean>>){

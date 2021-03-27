@@ -20,11 +20,12 @@ const useStyles = makeStyles((theme) => ({
 type ActionBarProps = {
   actionBarHeight: number,
   isBlackTurn: boolean,
+  setIsBlackTurn: Function,
   canvasSize: number,
   createNewGame: Function
 }
 
-function ActionBar({actionBarHeight, isBlackTurn, canvasSize, createNewGame}: ActionBarProps) {
+function ActionBar({actionBarHeight, isBlackTurn, setIsBlackTurn, canvasSize, createNewGame}: ActionBarProps) {
 
   const classes = useStyles(actionBarHeight);
 
@@ -36,6 +37,14 @@ function ActionBar({actionBarHeight, isBlackTurn, canvasSize, createNewGame}: Ac
   ` M 0, ${stoneRadius} 
     a ${stoneRadius},${stoneRadius} 0 1,0 ${stoneRadius*2},0 
     a ${stoneRadius},${stoneRadius} 0 1,0 ${stoneRadius*-2},0`;
+
+  const handlePass = () => {
+    const { isGameOver, playerOneScore, playerTwoScore } = passTurn(isBlackTurn);
+    setIsBlackTurn(!isBlackTurn);
+    console.log(`isGameOver: ${isGameOver}`);
+    console.log(`playerOneScore: ${playerOneScore}`);
+    console.log(`playerTwoScore: ${playerTwoScore}`);
+  }
 
   return (
     <>
@@ -63,7 +72,7 @@ function ActionBar({actionBarHeight, isBlackTurn, canvasSize, createNewGame}: Ac
           </svg>
         </Grid>
         <Grid item>
-          <Button color="secondary" variant="contained">
+          <Button color="secondary" variant="contained" onClick={handlePass}>
             Pass
           </Button>
         </Grid>

@@ -55,6 +55,20 @@ func tryPlaceStoneWrapper() js.Func {
 	return wrapperFunc
 }
 
+func passTurnWrapper() js.Func {
+	wrapperFunc := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		isBlackTurn := args[0].Bool()
+		isGameOver, playerOneScore, playerTwoScore := goGame.PassTurn(isBlackTurn)
+
+		return map[string]interface{}{
+			"isGameOver":     isGameOver,
+			"playerOneScore": playerOneScore,
+			"playerTwoScore": playerTwoScore,
+		}
+	})
+	return wrapperFunc
+}
+
 func getJsBoard(goBoard [][]uint8, boardSize int) js.Value {
 	jsBoardEvalString := "["
 
@@ -75,4 +89,5 @@ func getJsBoard(goBoard [][]uint8, boardSize int) js.Value {
 func RegisterCallbacks() {
 	js.Global().Set("newGoGame", newGoGameWrapper())
 	js.Global().Set("tryPlaceStone", tryPlaceStoneWrapper())
+	js.Global().Set("passTurn", passTurnWrapper())
 }

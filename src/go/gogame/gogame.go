@@ -11,6 +11,7 @@ type GoGame struct {
 	Board                  [][]uint8
 	BlackPreviousBoardHash string
 	WhitePreviousBoardHash string
+	LastTurnWasPassed      bool
 }
 
 // Coord ...
@@ -43,6 +44,7 @@ func NewGoGame(boardSize int) (GoGame, error) {
 		BoardSize:              boardSize,
 		BlackPreviousBoardHash: "",
 		WhitePreviousBoardHash: "",
+		LastTurnWasPassed:      false,
 	}
 
 	return newGoGame, nil
@@ -275,5 +277,25 @@ func (goGame *GoGame) TryPlaceStone(col int, row int, isBlackTurn bool) error {
 		return fmt.Errorf("Ko: one may not play in such a way as to recreate the board position following one's previous move")
 	}
 
+	// Stone was successfully placed. Turn was not passed.
+	goGame.LastTurnWasPassed = false
+
 	return nil
+}
+
+// PassTurn passes the current player's turn.
+// If the other player passed their previous turn, then this will trigger the end of the game.
+// Returned: (isGameOver, playerOneScore, playerTwoScore)
+func (goGame *GoGame) PassTurn(isBlackTurn bool) (bool, int, int) {
+	isGameOver := false
+	playerOneScore, playerTwoScore := 0, 0
+
+	if goGame.LastTurnWasPassed {
+		isGameOver = true
+		// TODO: Score board
+	} else {
+		goGame.LastTurnWasPassed = true
+	}
+
+	return isGameOver, playerOneScore, playerTwoScore
 }

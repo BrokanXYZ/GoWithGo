@@ -44,13 +44,13 @@ A Progressive Web App for playing the game of [Go](<https://en.wikipedia.org/wik
 
 - **0. Tech Stack Setup**
   - [x] PWA - Create-React-App
-  - [x] Golang --> WASM
-  - [ ] Host on GCP
+  - [x] Compile Golang to WASM
+  - [ ] Automate local compilation
+  - [ ] Host NodeJs server on App Engine
+  - [ ] CICD Pipeline with Cloud Build
 - **1. Game Logic (Japanese rules)**
   - [x] Start New Game
   - [ ] Scoring
-    - Territory
-    - Komi
   - [ ] Pass turn
   - [x] Place stone
     - [x] Empty check

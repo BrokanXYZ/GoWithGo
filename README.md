@@ -33,6 +33,8 @@ A Progressive Web App for playing the game of [Go](<https://en.wikipedia.org/wik
   - [x] Start New Game
   - [ ] Select Board Size (5x5, 9x9, 13x13, 19x19)
   - [ ] Scoring
+    - Territory vs Area
+    - Komi
   - [ ] Pass turn
   - [x] Place stone
     - [x] Empty check

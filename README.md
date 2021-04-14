@@ -20,15 +20,26 @@ A Progressive Web App for playing the game of [Go](<https://en.wikipedia.org/wik
 
 ## v3.0 - Online Multiplayer
 
-## v2.0 - Arcade Gamemode(s)
+## v2.0 - Arcade Gamemode
 
-#### v1.2 - Chinese Ruleset
+#### v1.6 - AGA Ruleset
+
+#### v1.5 - Korean Ruleset
+
+#### v1.4 - Chinese Ruleset
+
+#### v1.3 - Scoring Breakdown
+
+- [ ] Grid visualization
+- [ ] Number breakdown
+
+#### v1.2 - Game Replay
 
 #### v1.1 - TinyGo
 
 - [ ] Compile Golang to WASM using TinyGo
 
-## v1.0 - Offline Single Player
+## v1.0 - Single Player
 
 - [ ] Publish on Google Play
 - [ ] Offline AI
@@ -48,15 +59,20 @@ A Progressive Web App for playing the game of [Go](<https://en.wikipedia.org/wik
   - [ ] Automate local compilation
   - [ ] Host NodeJs server on App Engine
   - [ ] CICD Pipeline with Cloud Build
-- **1. Game Logic (Japanese rules)**
+- **1. Game Logic (Japanese ruleset)**
   - [x] Start New Game
   - [ ] Scoring
+    - Territory
+    - Seki
+    - Komi
   - [x] Pass turn
   - [x] Place stone
     - [x] Empty check
     - [x] Capture check
     - [x] Liberty check
     - [x] Ko check
+    - [ ] Triple Ko
+    - [ ] Forbid suicide
 - **2. UI**
   - [x] Buttons
     - [x] Pass

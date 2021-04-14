@@ -52,8 +52,8 @@ A Progressive Web App for playing the game of [Go](<https://en.wikipedia.org/wik
   - [x] PWA - Create-React-App
   - [x] Compile Golang to WASM
   - [ ] Automate local compilation
-  - [ ] Host NodeJs server on ???
-  - [ ] CICD Pipeline with ???
+  - [ ] Host NodeJs server on Elastic Beanstalk
+  - [ ] CICD Pipeline with CodeBuild
 - **1. Game Logic (Japanese ruleset)**
   - [x] Start New Game
   - [ ] Scoring

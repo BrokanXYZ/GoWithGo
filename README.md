@@ -11,27 +11,22 @@ A Progressive Web App for playing the game of [Go](<https://en.wikipedia.org/wik
 - Progressive Web App (PWA)
 - Golang
 - Web Assembly
-- Google Cloud Platform
+- AWS
 - TinyGo
 
 ---
 
 # Release Notes
 
-## v3.0 - Online Multiplayer
-
-## v2.0 - Arcade Gamemode
-
-#### v1.6 - AGA Ruleset
-
-#### v1.5 - Korean Ruleset
-
-#### v1.4 - Chinese Ruleset
+## v2.0 - Online Multiplayer
 
 #### v1.3 - Scoring Breakdown
 
 - [ ] Grid visualization
 - [ ] Number breakdown
+
+#### v1.3 - Smart Game Format
+  - [ ] Export to .sgf
 
 #### v1.2 - Game Replay
 
@@ -57,8 +52,8 @@ A Progressive Web App for playing the game of [Go](<https://en.wikipedia.org/wik
   - [x] PWA - Create-React-App
   - [x] Compile Golang to WASM
   - [ ] Automate local compilation
-  - [ ] Host NodeJs server on App Engine
-  - [ ] CICD Pipeline with Cloud Build
+  - [ ] Host NodeJs server on ???
+  - [ ] CICD Pipeline with ???
 - **1. Game Logic (Japanese ruleset)**
   - [x] Start New Game
   - [ ] Scoring

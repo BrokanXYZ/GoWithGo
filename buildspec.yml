@@ -8,12 +8,11 @@ phases:
       golang: 1.14
   pre_build:
     commands:
-      - npm run testwasm_linux
+      - cd src/go/gogame && GOOS=windows && GOARCH=amd64 && go test
   build:
     commands:
       - npm install
-      - cd src/go && GOOS=js && GOARCH=wasm && go build -o  ../../public/wasm/main.wasm
-      - cd ../..
+      - cd src/go && GOOS=js && GOARCH=wasm && go build -o  ../../public/wasm/main.wasm && cd ../..
       - npm run build
 artifacts:
   files:

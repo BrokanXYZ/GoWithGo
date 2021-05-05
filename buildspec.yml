@@ -8,7 +8,7 @@ phases:
       golang: 1.14
   pre_build:
     commands:
-      - cd src/go/gogame && GOOS=windows && GOARCH=amd64 && go test
+      - cd src/go/gogame && GOOS=linux && GOARCH=amd64 && go test
   build:
     commands:
       - npm install

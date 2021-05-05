@@ -12,7 +12,8 @@ phases:
   build:
     commands:
       - npm install
-      - npm run buildwasm_linux
+      - cd src/go && GOOS=js && GOARCH=wasm && go build -o  ../../public/wasm/main.wasm
+      - cd ../..
       - npm run build
 artifacts:
   files:

@@ -35,7 +35,9 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "buildwasm": "cd src/go && set GOOS=js&& set GOARCH=wasm&& go build -o  ../../public/wasm/main.wasm",
-    "testwasm": "cd src/go/gogame && set GOOS=windows&& set GOARCH=amd64&& go test"
+    "buildwasm_linux": "cd src/go && GOOS=js&& GOARCH=wasm&& go build -o  ../../public/wasm/main.wasm",
+    "testwasm": "cd src/go/gogame && set GOOS=windows&& set GOARCH=amd64&& go test",
+    "testwasm_linux": "cd src/go/gogame && GOOS=windows&& GOARCH=amd64&& go test"
   },
   "eslintConfig": {
     "extends": "react-app"

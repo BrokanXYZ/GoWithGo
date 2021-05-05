@@ -8,11 +8,11 @@ phases:
       golang: 1.14
   pre_build:
     commands:
-      - npm run testwasm
+      - npm run testwasm_linux
   build:
     commands:
       - npm install
-      - npm run buildwasm
+      - npm run buildwasm_linux
       - npm run build
 artifacts:
   files:

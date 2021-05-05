@@ -8,19 +8,12 @@ phases:
       golang: 1.14
   pre_build:
     commands:
-      - echo ===== Testing Golang Code =====
       - npm run testwasm
   build:
     commands:
-      - echo ===== Installing NPM Dependencies =====
       - npm install
-      - echo ===== Creating Prod Build =====
+      - npm run buildwasm
       - npm run build
-      - echo ===== Building Golang to WASM =====
-      - npm run buildwasm_prod
-  post_build:
-    commands:
-      - echo Build completed on `date`
 artifacts:
   files:
     - server.js

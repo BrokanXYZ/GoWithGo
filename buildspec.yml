@@ -1,0 +1,32 @@
+# AWS buildspec version (not version of this buildspec)
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 14
+      golang: 1.14
+  pre_build:
+    commands:
+      - echo ===== Testing Golang Code =====
+      - npm run testwasm
+  build:
+    commands:
+      - echo ===== Installing NPM Dependencies =====
+      - npm install
+      - echo ===== Creating Prod Build =====
+      - npm run build
+      - echo ===== Building Golang to WASM =====
+      - npm run buildwasm_prod
+  post_build:
+    commands:
+      - echo Build completed on `date`
+artifacts:
+  files:
+    - server.js
+    - build/**/*
+
+eb_codebuild_settings:
+  CodeBuildServiceRole: GoWithGo
+  ComputeType: BUILD_GENERAL1_SMALL
+  Image: aws/codebuild/amazonlinux2-aarch64-standard:2.0
